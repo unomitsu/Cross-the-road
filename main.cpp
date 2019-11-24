@@ -2,6 +2,7 @@
 #include "player.h"
 #include "douro.h"
 #include "camera.h"
+#include "car.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 	ChangeWindowMode(TRUE);			// ウィンドウモードに設定
@@ -29,6 +30,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	/* ===== カメラクラスの宣言 ===== */
 	camera main_camera = camera();
 
+	// 車クラス
+	car car_regular = car(VGet(2000.0f, 50.0f, -1350.0f));
+
 
 	// 各種データを出力
 	player1.draw_log();
@@ -38,6 +42,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	player3.draw_log();
 	player3.draw();
 	big_douro.draw_log();
+	car_regular.draw();
+	car_regular.draw_log();
 
 	ScreenFlip();		// 表画面へ反映
 	WaitKey();			// キー入力待ちをする
@@ -60,6 +66,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 道路クラス
 		big_douro.draw();
 
+		// 車クラス
+		car_regular.draw();
+		car_regular.update();
+
 		// カメラクラス
 		main_camera.update();
 		main_camera.draw();
@@ -73,6 +83,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	player2.finalize();
 	player3.finalize();
 	big_douro.finalize();
+	car_regular.finalize();
 
 	DxLib_End();			// ＤＸライブラリ使用の終了処理
 	return 0;				// ソフトの終了 
