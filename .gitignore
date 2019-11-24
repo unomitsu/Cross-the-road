@@ -260,4 +260,6 @@ paket-files/
 __pycache__/
 *.pyc
 
-resorces
+# Other files
+resorces/
+t/
