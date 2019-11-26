@@ -7,13 +7,13 @@ camera::camera() {
 
 void camera::update() {
 	// 方向キーでカメラの座標を移動
-	if (CheckHitKey(KEY_INPUT_SPACE) != 1) {
-		if (CheckHitKey(KEY_INPUT_UP) == 1) { position.y += 5.0f; }
-		if (CheckHitKey(KEY_INPUT_DOWN) == 1) { position.y -= 5.0f; }
-		if (CheckHitKey(KEY_INPUT_LEFT) == 1) { position.x -= 5.0f; }
-		if (CheckHitKey(KEY_INPUT_RIGHT) == 1) { position.x += 5.0f; }
-		if (CheckHitKey(KEY_INPUT_W) == 1) { position.z += 5.0f; }
-		if (CheckHitKey(KEY_INPUT_S) == 1) { position.z -= 5.0f; }
+	if (CheckHitKey(KEY_INPUT_LCONTROL) == 1) {
+		if (CheckHitKey(KEY_INPUT_UP) == 1) { position.y += 50.0f; }
+		if (CheckHitKey(KEY_INPUT_DOWN) == 1) { position.y -= 50.0f; }
+		if (CheckHitKey(KEY_INPUT_LEFT) == 1) { position.x -= 50.0f; }
+		if (CheckHitKey(KEY_INPUT_RIGHT) == 1) { position.x += 50.0f; }
+		if (CheckHitKey(KEY_INPUT_W) == 1) { position.z += 50.0f; }
+		if (CheckHitKey(KEY_INPUT_S) == 1) { position.z -= 50.0f; }
 	}
 
 	// カメラの位置と注視点をセット、注視点は原点

@@ -20,27 +20,30 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	/* ===== プレイヤークラスの宣言 ===== */
-	player player1 = player("./resorces/yukari/yukari.pmd", 14.0f, VGet(0.0f, 0.0f, 0.0f));
-	player player2 = player("./resorces/bokoboko.pmd", 20.0f, VGet(200.0f, 0.0f, 0.0f));
-	player player3 = player("./resorces/79吹雪型3.1/79磯波v3.1.pmx", 10.0f, VGet(-200.0f, 0.0f, 0.0f));
+	//player player1 = player("./resorces/yukari/yukari.pmd", 14.0f, VGet(0.0f, 0.0f, 0.0f));
+	player player1 = player("./resorces/bokoboko.pmd", 20.0f, VGet(200.0f, 0.0f, 0.0f));
+	//player player3 = player("./resorces/79吹雪型3.1/79磯波v3.1.pmx", 10.0f, VGet(-200.0f, 0.0f, 0.0f));
 	
 	/* ===== 道路クラスの宣言 ===== */
 	douro big_douro = douro("./resorces/Douro.mv1", VGet(5.0f, 1.0f, 2.0f), VGet(680.0f, -50.0f, -1100.0f));
-
+	
 	/* ===== カメラクラスの宣言 ===== */
 	camera main_camera = camera();
 
 	// 車クラス
 	car car_regular = car(VGet(2000.0f, 50.0f, -1350.0f));
 
+	int handle = MV1LoadModel("./resorces/run.vmd");
+	printfDx("Frame_num[%d]\n", MV1GetFrameNum(handle));
+	 
 
 	// 各種データを出力
 	player1.draw_log();
 	player1.draw();
-	player2.draw_log();
-	player2.draw();
-	player3.draw_log();
-	player3.draw();
+	//player2.draw_log();
+	//player2.draw();
+	//player3.draw_log();
+	//player3.draw();
 	big_douro.draw_log();
 	car_regular.draw();
 	car_regular.draw_log();
@@ -58,10 +61,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// プレイヤークラス
 		player1.update();
 		player1.draw();
-		player2.update();
-		player2.draw();
-		player3.update();
-		player3.draw();
+		//player2.update();
+		//player2.draw();
+		//player3.update();
+		//player3.draw();
 
 		// 道路クラス
 		big_douro.draw();
@@ -74,14 +77,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		main_camera.update();
 		main_camera.draw();
 
+		
+		
+		
 		// 裏画面の内容を表画面に反映
 		ScreenFlip();
 	}
 
 	// モデルハンドルの削除
 	player1.finalize();
-	player2.finalize();
-	player3.finalize();
+	//player2.finalize();
+	//player3.finalize();
 	big_douro.finalize();
 	car_regular.finalize();
 
