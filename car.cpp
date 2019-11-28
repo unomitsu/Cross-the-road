@@ -1,6 +1,13 @@
 #include "car.h"
 
+car::car() {
+	initialize(VGet(2000.0f, 50.0f, -1350.0f));
+}
+
 car::car(VECTOR pos) {
+	initialize(pos);
+}
+void car::initialize(VECTOR pos) {
 	model_name = "./resorces/boxcar.mv1";				// 3Dƒ‚ƒfƒ‹–¼‚ÌŠi”[
 	model_extend = VGet(200.0f, 200.0f, 200.0f);		// 3Dƒ‚ƒfƒ‹‚ÌkÚ—¦‚ÌŠi”[
 	model_handle = MV1LoadModel(model_name.c_str());	// 3Dƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
@@ -51,6 +58,9 @@ void car::update() {
 void car::draw() {
 	// ‚R‚cƒ‚ƒfƒ‹‚ğ•`‰æ
 	MV1DrawModel(model_handle);
+	
+	DrawFormatString(10, 250, GetColor(255, 255, 255), "Pos(%.2f, %.2f, %.2f)\n", model_position.x, model_position.y, model_position.z);		// 3Dƒ‚ƒfƒ‹‚Ì‹óŠÔÀ•W
+	DrawFormatString(10, 270, GetColor(255, 255, 255), "move_value[%.2f]\n", speed);
 }
 
 void car::draw_log() {

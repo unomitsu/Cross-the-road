@@ -11,7 +11,7 @@ private:
 	int model_handle;			// 3Dƒ‚ƒfƒ‹‚Ìƒnƒ“ƒhƒ‹
 
 public:
-	douro(std::string filename, VECTOR extendf, VECTOR pos);
+	douro();
 	void update();
 	void draw();
 	void draw_log();

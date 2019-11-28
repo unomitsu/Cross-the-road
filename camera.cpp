@@ -3,6 +3,8 @@
 camera::camera() {
 	// カメラの空間座標の初期化
 	position = VGet(800.0f, 240.0f, 1500.0f);
+	// カメラの位置と注視点をセット、注視点は原点
+	SetCameraPositionAndTarget_UpVecY(position, VGet(0.0f, 0.0f, 0.0f));
 }
 
 void camera::update() {
@@ -27,5 +29,5 @@ void camera::draw() {
 	DrawLine3D(VGet(0.0f, 0.0f, -1000.0f), VGet(0.0f, 0.0f, 1000.0f), GetColor(255, 255, 255));		// z 緑
 
 
-	DrawFormatString(100, 100, GetColor(255, 255, 255), "CAMERA(%f, %f, %f)", position.x, position.y, position.z);
+	DrawFormatString(10, 10, GetColor(255, 255, 255), "CAMERA(%f, %f, %f)", position.x, position.y, position.z);
 }

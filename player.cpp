@@ -1,6 +1,15 @@
 #include "player.h"
 
+player::player() {
+	initialize("./resorces/bokoboko.pmd", 20.0f, VGet(0.0f, 0.0f, 0.0f), false);
+}
+
 player::player(std::string filename, float extendf, VECTOR pos) {
+	initialize(filename, extendf, pos, true);
+}
+
+// 初期処理 anim_load によりアニメーションの設定有無を変更
+void player::initialize(std::string filename, float extendf, VECTOR pos, bool anim_load) {
 	model_name = filename;								// 3Dモデル名の格納
 	model_extend = VGet(extendf, extendf, extendf);		// 3Dモデルの縮尺率の格納
 	model_handle = MV1LoadModel(model_name.c_str());	// 3Dモデルの読み込み
@@ -9,7 +18,7 @@ player::player(std::string filename, float extendf, VECTOR pos) {
 
 	// 3Dモデルの拡大縮小
 	MV1SetScale(model_handle, model_extend);
-	
+
 	// 3Dモデルの輪郭線の修正
 	int MaterialNum = MV1GetMaterialNum(model_handle);
 	for (int i = 0; i < MaterialNum; i++) {
@@ -22,20 +31,23 @@ player::player(std::string filename, float extendf, VECTOR pos) {
 	model_rotation = VGet(0.0f, 0.0f, 0.0f);									// 3Dモデルの回転値の格納
 	MV1SetPosition(model_handle, model_position);								// 3Dモデルの3D空間への配置
 
-	/* ----- アニメーションの設定 ----- */
-	attach_index = MV1AttachAnim(model_handle, 0, -1, FALSE);					// 付属モーションのアタッチ
-	anim_total_time = MV1GetAttachAnimTotalTime(model_handle, attach_index);	// 総再生時間の取得
-	anim_play_time = 0.0f;														// 再生時間の初期化
+	// アニメーションと操作関連の設定をする場合
+	if (anim_load) {
+		/* ----- アニメーションの設定 ----- */
+		attach_index = MV1AttachAnim(model_handle, 0, -1, FALSE);					// 付属モーションのアタッチ
+		anim_total_time = MV1GetAttachAnimTotalTime(model_handle, attach_index);	// 総再生時間の取得
+		anim_play_time = 0.0f;														// 再生時間の初期化
 
-	/* ----- 移動関連の設定 ----- */
-	model_move_state = PLAYER_STATE_STAND;	// 初期状態を設定する
-	model_move_max = 20.0f;					// 移動量の最大値を格納
-	model_move_value = 0.0f;				// 移動量の現在値を格納
-	model_move_external = VGet(0.0f, 0.0f, 0.0f);	// 外力を初期化する
+		/* ----- 移動関連の設定 ----- */
+		model_move_state = PLAYER_STATE_STAND;	// 初期状態を設定する
+		model_move_max = 20.0f;					// 移動量の最大値を格納
+		model_move_value = 0.0f;				// 移動量の現在値を格納
+		model_move_external = VGet(0.0f, 0.0f, 0.0f);	// 外力を初期化する
 
-	// アニメーションによるローカルの座標移動を無効にする
-	MV1SetFrameUserLocalMatrix(model_handle, MV1SearchFrame(model_handle, "センター"), MGetIdent());
-	//MV1SetFrameUserLocalMatrix(model_handle, MV1SearchFrame(model_handle, "グルーブ"), MGetIdent());
+		// アニメーションによるローカルの座標移動を無効にする
+		MV1SetFrameUserLocalMatrix(model_handle, MV1SearchFrame(model_handle, "センター"), MGetIdent());
+		//MV1SetFrameUserLocalMatrix(model_handle, MV1SearchFrame(model_handle, "グルーブ"), MGetIdent());
+	}
 }
 
 // プレイヤーの更新
@@ -49,11 +61,6 @@ void player::update() {
 	// 3Dモデルの3D空間への再配置
 	MV1SetPosition(model_handle, model_position);
 	MV1SetRotationXYZ(model_handle, model_rotation);
-
-	// 座標と向きの出力
-	DrawFormatString(200, 150, GetColor(255, 255, 255), "Pos(%.2f, %.2f, %.2f)\n", model_position.x, model_position.y, model_position.z);
-	DrawFormatString(200, 150, GetColor(255, 255, 255), "Rot(%.2f, %.2f, %.2f)\n", model_rotation.x, model_rotation.y, model_rotation.z);
-
 }
 
 // プレイヤーのアニメーションの更新
@@ -200,8 +207,6 @@ void player::update_control() {
 
 	// 移動量を加算して、座標の更新
 	model_position = VAdd(model_position, move);
-
-	DrawFormatString(200, 180, GetColor(255, 255, 255), "move_value[%.2f]\n", model_move_value);
 }
 
 // 3Dモデルの描画
@@ -209,9 +214,7 @@ void player::draw() {
 	// ３Ｄモデルを描画
 	MV1DrawModel(model_handle);
 	
-	// 現座標に球を描画
-	DrawSphere3D(model_position, 8.0f, 16, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
-
+	// 移動状態の表示
 	std::string str;
 	switch (model_move_state) {
 	case PLAYER_STATE_STAND: str = "STATE_STAND"; break;
@@ -219,8 +222,11 @@ void player::draw() {
 	case PLAYER_STATE_RUN: str = "STATE_RUN"; break;
 	case PLAYER_STATE_STOP:	str = "STATE_STOP"; break;
 	}
-	DrawFormatString(200, 200, GetColor(255, 255, 255), "%s _play_time[%f]\n", str.c_str(), anim_play_time);
-	DrawFormatString(200, 250, GetColor(255, 255, 255), "(%.2f, %.2f, %.2f)\n", model_move_external.x, model_move_external.y, model_move_external.z);
+	DrawFormatString(10, 100, GetColor(255, 255, 255), "%s _play_time[%f]\n", str.c_str(), anim_play_time);										// 移動状態とアニメーションの現在時間
+	DrawFormatString(10, 120, GetColor(255, 255, 255), "Pos(%.2f, %.2f, %.2f)\n", model_position.x, model_position.y, model_position.z);		// 3Dモデルの空間座標
+	DrawFormatString(10, 140, GetColor(255, 255, 255), "Rot(%.2f, %.2f, %.2f)\n", model_rotation.x, model_rotation.y, model_rotation.z);		// 3Dモデルの回転値
+	DrawFormatString(10, 160, GetColor(255, 255, 255), "Ext(%.2f, %.2f, %.2f)\n", model_move_external.x, model_move_external.y, model_move_external.z);	// 3Dモデルへの外力
+	DrawFormatString(10, 180, GetColor(255, 255, 255), "move_value[%.2f]\n", model_move_value);
 }
 
 // 3Dモデルの各データの出力

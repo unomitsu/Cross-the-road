@@ -40,7 +40,9 @@ private:
 	VECTOR model_move_external;	// 3Dモデルへの外力
 
 public:
-	player(std::string filename, float extendf, VECTOR pos);
+	player();	// タイトル用のコンストラクタ
+	player(std::string filename, float extendf, VECTOR pos);							// 指定したモデルを設定
+	void initialize(std::string filename, float extendf, VECTOR pos, bool anim_load);	// 初期処理 anim_load によりアニメーションの設定有無を変更
 	void update();
 	void update_anim();
 	void update_control();

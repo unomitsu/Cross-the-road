@@ -23,7 +23,9 @@ private:
 	int move_type;				// 車の進行タイプ
 
 public:
-	car(VECTOR pos);
+	car();							// タイトル用
+	car(VECTOR pos);				// 座標を指定して作成
+	void initialize(VECTOR pos);	// 初期設定
 	void update();
 	void draw();
 	void draw_log();
