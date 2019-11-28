@@ -50,5 +50,7 @@ public:
 
 	bool is_move();
 	void add_vector(VECTOR vec);
+
+	VECTOR get_position();
 };
 

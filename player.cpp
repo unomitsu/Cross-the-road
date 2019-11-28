@@ -220,6 +220,7 @@ void player::draw() {
 	case PLAYER_STATE_STOP:	str = "STATE_STOP"; break;
 	}
 	DrawFormatString(200, 200, GetColor(255, 255, 255), "%s _play_time[%f]\n", str.c_str(), anim_play_time);
+	DrawFormatString(200, 250, GetColor(255, 255, 255), "(%.2f, %.2f, %.2f)\n", model_move_external.x, model_move_external.y, model_move_external.z);
 }
 
 // 3Dモデルの各データの出力
@@ -239,6 +240,12 @@ bool player::is_move() {
 	return (CheckHitKey(KEY_INPUT_UP) == 1 || CheckHitKey(KEY_INPUT_RIGHT) == 1 || CheckHitKey(KEY_INPUT_DOWN) == 1 || CheckHitKey(KEY_INPUT_LEFT) == 1);
 }
 
+// 外からの力を設定する
 void player::add_vector(VECTOR vec) {
 	model_move_external = VAdd(model_move_external, vec);
+}
+
+// プレイヤーの座標を VECTOR 型で取得する
+VECTOR player::get_position() {
+	return model_position;
 }

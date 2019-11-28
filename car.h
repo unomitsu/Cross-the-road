@@ -28,4 +28,7 @@ public:
 	void draw();
 	void draw_log();
 	void finalize();
+
+	VECTOR get_position();
+	VECTOR get_move_vector();
 };

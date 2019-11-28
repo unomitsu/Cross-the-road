@@ -61,3 +61,13 @@ void car::finalize() {
 	// モデルハンドルの削除
 	MV1DeleteModel(model_handle);
 }
+
+// 車の座標を VECTOR 型で取得する
+VECTOR car::get_position() {
+	return model_position;
+}
+
+// 車の移動量を VECTOR 型で取得する
+VECTOR car::get_move_vector() {
+	return VGet(speed, 0.0f, 0.0f);
+}

@@ -3,6 +3,7 @@
 #include "douro.h"
 #include "camera.h"
 #include "car.h"
+#include "collision.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 	ChangeWindowMode(TRUE);			// ウィンドウモードに設定
@@ -77,7 +78,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		main_camera.update();
 		main_camera.draw();
 
-		
+		// あたり判定
+		collision_player_car(&player1, &car_regular);
 		
 		
 		// 裏画面の内容を表画面に反映

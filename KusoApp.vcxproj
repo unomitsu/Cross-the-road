@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="car.cpp" />
+    <ClCompile Include="collision.cpp" />
     <ClCompile Include="douro.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
@@ -135,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="car.h" />
+    <ClInclude Include="collision.h" />
     <ClInclude Include="douro.h" />
     <ClInclude Include="player.h" />
   </ItemGroup>
