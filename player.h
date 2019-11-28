@@ -37,6 +37,7 @@ private:
 	float model_move_max;		// 3Dモデルの移動量の最大値
 	float model_move_value;		// 3Dモデルの移動量の現在値
 	int model_move_direction;	// 3Dモデルの進行方向
+	VECTOR model_move_external;	// 3Dモデルへの外力
 
 public:
 	player(std::string filename, float extendf, VECTOR pos);
@@ -46,6 +47,8 @@ public:
 	void draw();
 	void draw_log();
 	void finalize();
+
 	bool is_move();
+	void add_vector(VECTOR vec);
 };
 
