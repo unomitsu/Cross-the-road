@@ -1,18 +1,19 @@
 #include "car.h"
 
 car::car() {
-	initialize(VGet(2000.0f, 50.0f, -1350.0f));
+	initialize(VGet(2000.0f, 50.0f, -1350.0f), CAR_MOVE_RIGHT);
 }
 
-car::car(VECTOR pos) {
-	initialize(pos);
+car::car(VECTOR pos, int move) {
+	initialize(pos, move);
 }
-void car::initialize(VECTOR pos) {
+void car::initialize(VECTOR pos, int move) {
 	model_name = "./resorces/boxcar.mv1";				// 3Dモデル名の格納
 	model_extend = VGet(500.0f, 500.0f, 500.0f);		// 3Dモデルの縮尺率の格納
 	model_handle = MV1LoadModel(model_name.c_str());	// 3Dモデルの読み込み
+	flag = true;	// 有効にする
 
-	move_type = CAR_MOVE_RIGHT;
+	move_type = move;
 	speed = -20.0f;
 
 	/* ----- 3Dモデルの設定変更 ----- */
@@ -33,21 +34,24 @@ void car::initialize(VECTOR pos) {
 }
 
 void car::update() {
-	// 移動量の加算
-	model_position.x += speed;
-
 	// 車の進行タイプが右の時 x座標マイナス
 	if (move_type == CAR_MOVE_RIGHT) {
-		// 下限に到達したときの処理
-		if (model_position.x <= ROAD_LIMIT_RIGHT) {
-			model_position.x = ROAD_LIMIT_LEFT;
+		// 移動量の加算
+		model_position.x += speed;
+
+		// 下限に到達したとき、有効フラグを落す
+		if (model_position.x < ROAD_LIMIT_RIGHT) {
+			flag = false;
 		}
 	}
 	// 車の進行タイプが左の時 x座標プラス
 	else {
-		// 上限に到達したときの処理
-		if (ROAD_LIMIT_RIGHT <= model_position.x) {
-			model_position.x = ROAD_LIMIT_RIGHT;
+		// 移動量の加算
+		model_position.x -= speed;
+
+		// 上限に到達したとき、有効フラグを落す
+		if (ROAD_LIMIT_LEFT < model_position.x) {
+			flag = false;
 		}
 	}
 
