@@ -13,6 +13,8 @@ class game_manager {
 private:
 	int game_state;		// ゲームの画面状態
 
+	int game_span;		// ゲーム終了後の待機時間
+	bool game_clear;	// ゲームクリアフラグ
 	bool game_miss;		// ゲーム失敗フラグ
 
 	player obj_player;	// プレイヤーインスタンス

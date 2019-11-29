@@ -9,7 +9,7 @@ car::car(VECTOR pos) {
 }
 void car::initialize(VECTOR pos) {
 	model_name = "./resorces/boxcar.mv1";				// 3Dƒ‚ƒfƒ‹–¼‚ÌŠi”[
-	model_extend = VGet(200.0f, 200.0f, 200.0f);		// 3Dƒ‚ƒfƒ‹‚ÌkÚ—¦‚ÌŠi”[
+	model_extend = VGet(500.0f, 500.0f, 500.0f);		// 3Dƒ‚ƒfƒ‹‚ÌkÚ—¦‚ÌŠi”[
 	model_handle = MV1LoadModel(model_name.c_str());	// 3Dƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
 
 	move_type = CAR_MOVE_RIGHT;

@@ -2,7 +2,7 @@
 
 douro::douro() {
 	model_name = "./resorces/Douro.mv1";				// 3Dモデル名の格納
-	model_extend = VGet(5.0f, 1.0f, 2.0f);				// 3Dモデルの縮尺率の格納
+	model_extend = VGet(5.0f, 1.0f, 4.0f);				// 3Dモデルの縮尺率の格納
 	model_handle = MV1LoadModel(model_name.c_str());	// 3Dモデルの読み込み
 
 	/* ----- 3Dモデルの設定変更 ----- */
@@ -18,7 +18,7 @@ douro::douro() {
 	}
 
 	/* ----- 3Dモデルの配置 原点(320.0f, -300.0f, 600.0f)とする ----- */
-	model_position = VGet(320.0f + 680.0f, -300.0f + -50.0f, 600.0f + -1100.0f);	// 3Dモデルの座標の格納
+	model_position = VGet(320.0f + 0.0f, -300.0f + -50.0f, 600.0f + -2000.0f);	// 3Dモデルの座標の格納
 	MV1SetPosition(model_handle, model_position);									// 3Dモデルの3D空間への配置
 }
 

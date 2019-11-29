@@ -4,7 +4,7 @@
 
 // プレイヤーと車の簡易あたり判定
 bool collision_player_car(player *t_player, car *t_car) {
-	float dir = 100.0f;	// 当たったことになる距離
+	float dir = 200.0f;	// 当たったことになる距離
 
 	// 各座標を取得する
 	VECTOR player_pos = t_player->get_position();
@@ -17,7 +17,9 @@ bool collision_player_car(player *t_player, car *t_car) {
 
 	// 当たっていれば、プレイヤーに車の移動量をぶつける
 	if (dir_x + dir_y <= dir_r) {
-		t_player->add_vector(t_car->get_move_vector());
+		VECTOR val = t_car->get_move_vector();
+		printfDx("VAL %.2f", val);
+		t_player->add_vector(VGet(val.x, abs(val.x), val.z));
 		return true;
 	}
 

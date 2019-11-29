@@ -7,6 +7,6 @@ private:
 
 public:
 	camera();
-	void update();
+	void update(VECTOR pos);
 	void draw();
 };

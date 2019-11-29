@@ -7,7 +7,8 @@ camera::camera() {
 	SetCameraPositionAndTarget_UpVecY(position, VGet(0.0f, 0.0f, 0.0f));
 }
 
-void camera::update() {
+void camera::update(VECTOR pos) {
+	/*
 	// 方向キーでカメラの座標を移動
 	if (CheckHitKey(KEY_INPUT_LCONTROL) == 1) {
 		if (CheckHitKey(KEY_INPUT_UP) == 1) { position.y += 50.0f; }
@@ -17,9 +18,17 @@ void camera::update() {
 		if (CheckHitKey(KEY_INPUT_W) == 1) { position.z += 50.0f; }
 		if (CheckHitKey(KEY_INPUT_S) == 1) { position.z -= 50.0f; }
 	}
-
-	// カメラの位置と注視点をセット、注視点は原点
-	SetCameraPositionAndTarget_UpVecY(position, VGet(320.0f, 240.0f, 1.0f));
+	*/
+	// Sキーを押している場合、左俯瞰
+	if (CheckHitKey(KEY_INPUT_LCONTROL) == 1) {
+		position = VGet(pos.x - 500.0f, 240.0f, pos.z + 900.0f);
+	}
+	// Sキーを押していない場合、右俯瞰
+	else {
+		position = VGet(pos.x + 500.0f, 240.0f, pos.z + 900.0f);
+	}
+	// カメラの位置と注視点をセット、注視点はプレイヤー
+	SetCameraPositionAndTarget_UpVecY(position, pos);
 }
 
 void camera::draw() {
