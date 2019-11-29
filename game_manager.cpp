@@ -138,12 +138,12 @@ player player1 = player("./resorces/bokoboko.pmd", 20.0f, VGet(200.0f, 0.0f, 0.0
 void game_manager::car_make() {
 	const float road_far_left = -3100.0f;		// âúë§ÇÃìπòHÇÃç∂é‘ê¸
 	const float road_far_right = -2500.0f;		// âúë§ÇÃìπòHÇÃâEé‘ê¸
-	const float road_this_left = -1800.0f;		// éËëOë§ÇÃìπòHÇÃç∂é‘ê¸
-	const float road_this_right = -1200.0f;		// éËëOë§ÇÃìπòHÇÃâEé‘ê¸
+	const float road_this_left = -800.0f;		// éËëOë§ÇÃìπòHÇÃç∂é‘ê¸
+	const float road_this_right = -1300.0f;		// éËëOë§ÇÃìπòHÇÃâEé‘ê¸
 
 	// éwíËÇµÇΩä‘äuÇ™åoâﬂÇµÇΩÇÁé‘Çí«â¡Ç∑ÇÈ
-	if (car_span++ >= 60) {//GetRand(3)
-		switch (2) {
+	if (car_span++ >= 10) {
+		switch (GetRand(3)) {
 		case 0:		// âúë§ÇÃç∂
 			obj_car.push_back(car(VGet(ROAD_LIMIT_LEFT, 50.0f, road_far_left), CAR_MOVE_RIGHT));
 			break;
