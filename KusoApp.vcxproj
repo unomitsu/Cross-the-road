@@ -130,6 +130,7 @@
     <ClCompile Include="game_manager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resorces\eric.mv1" />
@@ -140,6 +141,7 @@
     <ClInclude Include="collision.h" />
     <ClInclude Include="douro.h" />
     <ClInclude Include="game_manager.h" />
+    <ClInclude Include="timer.h" />
     <ClInclude Include="player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

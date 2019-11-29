@@ -1,20 +1,20 @@
 #include "car.h"
 
 car::car() {
-	initialize(VGet(2000.0f, 50.0f, -1350.0f), CAR_MOVE_RIGHT);
+	initialize(VGet(2000.0f, 100.0f, -1350.0f), CAR_MOVE_RIGHT);
 }
 
-car::car(VECTOR pos, int move) {
+car::car(VECTOR pos, int move, int type) {
 	initialize(pos, move);
 }
-void car::initialize(VECTOR pos, int move) {
+void car::initialize(VECTOR pos, int move, int type) {
 	model_name = "./resorces/boxcar.mv1";				// 3Dƒ‚ƒfƒ‹–¼‚ÌŠi”[
-	model_extend = VGet(500.0f, 500.0f, 500.0f);		// 3Dƒ‚ƒfƒ‹‚ÌkÚ—¦‚ÌŠi”[
+	model_extend = VGet(900.0f, 900.0f, 900.0f);		// 3Dƒ‚ƒfƒ‹‚ÌkÚ—¦‚ÌŠi”[
 	model_handle = MV1LoadModel(model_name.c_str());	// 3Dƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
 	flag = true;	// —LŒø‚É‚·‚é
 
 	move_type = move;
-	speed = -20.0f;
+	speed = -50.0f;
 
 	/* ----- 3Dƒ‚ƒfƒ‹‚Ìİ’è•ÏX ----- */
 

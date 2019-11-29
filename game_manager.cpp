@@ -70,6 +70,10 @@ void game_manager::update() {
 	case GAME_STATE_PLAY:
 		if (key_span++ > 180) {
 			obj_player.update();							// プレイヤーの操作
+			obj_timer.update();								// タイマーの更新
+		}
+		else {
+			obj_timer.initialize();							// タイマーの初期化
 		}
 		for (unsigned int i = 0; i < obj_car.size(); i++) {
 			obj_car.at(i).update();							// 車の移動
@@ -155,6 +159,10 @@ void game_manager::draw() {
 		case GAME_MODE_NORMAL: DrawFormatString(10, 10, GetColor(255, 255, 255), "MODE[ NORMAL ]"); break;
 		case GAME_MODE_HARD: DrawFormatString(10, 10, GetColor(255, 255, 255), "MODE[ HARD ]"); break;
 		}
+
+		// タイマー表示
+		obj_timer.draw();
+
 		break;
 	case GAME_STATE_RESULT:
 		if (game_clear) {
@@ -202,16 +210,16 @@ void game_manager::car_make() {
 	if (car_span++ >= car_interval) {
 		switch (GetRand(3)) {
 		case 0:		// 奥側の左
-			obj_car.push_back(car(VGet(ROAD_LIMIT_LEFT, 50.0f, road_far_left), CAR_MOVE_RIGHT));
+			obj_car.push_back(car(VGet(ROAD_LIMIT_LEFT, 100.0f, road_far_left), CAR_MOVE_RIGHT));
 			break;
 		case 1:		// 奥側の右
-			obj_car.push_back(car(VGet(ROAD_LIMIT_LEFT, 50.0f, road_far_right), CAR_MOVE_RIGHT));
+			obj_car.push_back(car(VGet(ROAD_LIMIT_LEFT, 100.0f, road_far_right), CAR_MOVE_RIGHT));
 			break;
 		case 2:		// 手前側の右
-			obj_car.push_back(car(VGet(ROAD_LIMIT_RIGHT, 50.0f, road_this_right), CAR_MOVE_LEFT));
+			obj_car.push_back(car(VGet(ROAD_LIMIT_RIGHT, 100.0f, road_this_right), CAR_MOVE_LEFT));
 			break;
 		case 3:		// 手前側の左
-			obj_car.push_back(car(VGet(ROAD_LIMIT_RIGHT, 50.0f, road_this_left), CAR_MOVE_LEFT));
+			obj_car.push_back(car(VGet(ROAD_LIMIT_RIGHT, 100.0f, road_this_left), CAR_MOVE_LEFT));
 			break;
 		}
 

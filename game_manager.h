@@ -4,6 +4,7 @@
 #include "car.h"
 #include "douro.h"
 #include "camera.h"
+#include "timer.h"
 #include <vector>
 
 // ゲームの画面状態
@@ -29,6 +30,7 @@ private:
 	std::vector<car> obj_car;	// 車インスタンス
 	douro obj_douro;			// 道路インスタンス
 	camera obj_camera;			// カメラインスタンス
+	timer obj_timer;			// タイマー
 
 	int car_span;		// 車作成の現間隔
 	int car_interval;	// 車作成の制限間隔

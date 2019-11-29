@@ -10,6 +10,9 @@
 #define CAR_MOVE_LEFT		0
 #define CAR_MOVE_RIGHT		1
 
+// 車のタイプ
+#define CAR_TYPE_REGULAR	0
+#define CAR_TYPE_RORA		1
 
 class car {
 private:
@@ -23,11 +26,12 @@ private:
 	int move_type;				// 車の進行タイプ
 
 public:
+	float model_size;			// 車の大きさ
 	bool flag;					// 有効フラグ
 
 	car();									// タイトル用
-	car(VECTOR pos, int move);				// 座標を指定して作成
-	void initialize(VECTOR pos, int move);	// 初期設定
+	car(VECTOR pos, int move, int type);				// 座標を指定して作成
+	void initialize(VECTOR pos, int move, int type);	// 初期設定
 	void update();		// 更新
 	void draw();		// 描画
 	void draw_log();	// 各データの表示
