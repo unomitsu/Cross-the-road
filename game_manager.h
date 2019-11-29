@@ -9,8 +9,9 @@
 
 // ゲームの画面状態
 #define GAME_STATE_TITLE	0
-#define GAME_STATE_PLAY		1
-#define GAME_STATE_RESULT	2
+#define GAME_STATE_SELECT	1
+#define GAME_STATE_PLAY		2
+#define GAME_STATE_RESULT	3
 
 // ゲームの難易度
 #define GAME_MODE_EASY		0
@@ -21,6 +22,7 @@ class game_manager {
 private:
 	int game_state;		// ゲームの画面状態
 	int game_mode;		// ゲームの難易度
+	int game_character;	// ゲームで使用するキャラクター
 
 	int game_span;		// ゲーム終了後の待機時間
 	bool game_clear;	// ゲームクリアフラグ

@@ -1,20 +1,39 @@
 #include "car.h"
 
+// モデルハンドル
+int car::model_regular;
+int car::model_rora;
+
 car::car() {
-	initialize(VGet(2000.0f, 100.0f, -1350.0f), CAR_MOVE_RIGHT);
+	// モデルハンドルの読み込み
+	model_regular = MV1LoadModel("./resorces/boxcar.mv1");
+	model_rora = MV1LoadModel("./resorces/rora.mv1");
+
+	initialize(CAR_TYPE_REGULAR, 900.0f, VGet(2000.0f, 100.0f, -1350.0f), -50.0f);
 }
 
-car::car(VECTOR pos, int move, int type) {
-	initialize(pos, move);
+car::car(int type, VECTOR pos, float v) {
+	car_type = type;
+	switch (type) {
+	case CAR_TYPE_REGULAR:
+		initialize(CAR_TYPE_REGULAR, 900.0f, pos, v);
+		break;
+	case CAR_TYPE_RORA:
+		initialize(CAR_TYPE_RORA, 3.0f, pos, v);
+		model_rotation = VGet(DX_PI_F / 2, 0.0f, 0.0f);
+		break;
+	}
 }
-void car::initialize(VECTOR pos, int move, int type) {
-	model_name = "./resorces/boxcar.mv1";				// 3Dモデル名の格納
-	model_extend = VGet(900.0f, 900.0f, 900.0f);		// 3Dモデルの縮尺率の格納
-	model_handle = MV1LoadModel(model_name.c_str());	// 3Dモデルの読み込み
+void car::initialize(int type, float extendf, VECTOR pos, float v) {
+	// 3Dモデルの読み込み(複製)
+	switch (type) {
+	case CAR_TYPE_REGULAR: model_handle = MV1DuplicateModel(model_regular); break;
+	case CAR_TYPE_RORA:	model_handle = MV1DuplicateModel(model_rora); break;
+	}
+	model_extend = VGet(extendf, extendf, extendf);		// 3Dモデルの縮尺率の格納
 	flag = true;	// 有効にする
 
-	move_type = move;
-	speed = -50.0f;
+	speed = v;		// 移動量の設定
 
 	/* ----- 3Dモデルの設定変更 ----- */
 
@@ -29,40 +48,37 @@ void car::initialize(VECTOR pos, int move, int type) {
 	}
 
 	/* ----- 3Dモデルの配置 原点(320.0f, -300.0f, 600.0f)とする ----- */
-	model_position = VGet(320.0f + pos.x, -300.0f + pos.y, 600.0f + pos.z);		// 3Dモデルの座標の格納
-	MV1SetPosition(model_handle, model_position);								// 3Dモデルの3D空間への配置
+	model_position = VGet(pos.x, -300.0f + pos.y, pos.z);		// 3Dモデルの座標の格納
+	model_rotation = VGet(0.0f, 0.0f, 0.0f);					// 3Dモデルの回転値の初期化
+	MV1SetPosition(model_handle, model_position);				// 3Dモデルの3D空間への配置
 }
 
 void car::update() {
-	// 車の進行タイプが右の時 x座標マイナス
-	if (move_type == CAR_MOVE_RIGHT) {
-		// 移動量の加算
-		model_position.x += speed;
+	// 移動量計算用の変数
+	VECTOR value = VGet(speed, 0.0f, 0.0f);
 
-		// 下限に到達したとき、有効フラグを落す
-		if (model_position.x < ROAD_LIMIT_RIGHT) {
-			flag = false;
-		}
+	// 移動量の加算
+	model_position = VAdd(model_position, value);
+
+	// 上限、下限に到達したとき有効フラグを落す
+	if (model_position.x > ROAD_LIMIT_LEFT || ROAD_LIMIT_RIGHT > model_position.x) {
+		flag = false;
 	}
-	// 車の進行タイプが左の時 x座標プラス
-	else {
-		// 移動量の加算
-		model_position.x -= speed;
 
-		// 上限に到達したとき、有効フラグを落す
-		if (ROAD_LIMIT_LEFT < model_position.x) {
-			flag = false;
-		}
+	// 各車タイプごとの処理
+	switch (car_type) {
+	case CAR_TYPE_RORA:	model_rotation.z -= speed / 1000.0f; break;
 	}
 
 	// 移動後の座標で再配置
 	MV1SetPosition(model_handle, model_position);
+	MV1SetRotationXYZ(model_handle, model_rotation);
 }
 
 void car::draw() {
 	// ３Ｄモデルを描画
 	MV1DrawModel(model_handle);
-	
+
 	// DrawFormatString(10, 250, GetColor(255, 255, 255), "Pos(%.2f, %.2f, %.2f)\n", model_position.x, model_position.y, model_position.z);		// 3Dモデルの空間座標
 	// DrawFormatString(10, 270, GetColor(255, 255, 255), "move_value[%.2f]\n", speed);
 }
@@ -83,8 +99,5 @@ VECTOR car::get_position() {
 
 // 車の移動量を VECTOR 型で取得する
 VECTOR car::get_move_vector() {
-	if (move_type == CAR_MOVE_LEFT) {
-		return VGet(speed, 0.0f, 0.0f);
-	}
-	return VGet(-speed, 0.0f, 0.0f);
+	return VGet(speed, 0.0f, 0.0f);
 }

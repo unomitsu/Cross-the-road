@@ -3,12 +3,14 @@
 
 game_manager::game_manager() {
 	game_state = GAME_STATE_TITLE;
+	game_character = GAME_CHARA_BOKO;
 
 	game_span = 0;
 	game_clear = false;
 	game_miss = false;
 
 	car_span = 0;
+	car_interval = 60;
 	key_span = 0;
 
 	// 車一個挿入
@@ -35,6 +37,7 @@ void game_manager::update() {
 		for (unsigned int i = 0; i < obj_car.size(); i++) {
 			obj_car.at(i).update();							// 車の移動
 		}
+		car_make();		// 車の追加
 
 		// 難易度の選択
 		if (key_span++ > 10) {
@@ -48,11 +51,8 @@ void game_manager::update() {
 			}
 		}
 
-		// スペースキーが押されたら、ゲームへ移行
+		// スペースキーが押されたら、キャラクターセレクトへ移行
 		if (game_span++ >= 30 && CheckHitKey(KEY_INPUT_SPACE) == 1) {
-			// プレイヤー設定
-			obj_player = player("./resorces/yukari/yukari.pmd", 14.0f, VGet(0.0f, 0.0f, 0.0f));
-
 			// 難易度による、車の数の設定
 			switch (game_mode) {
 			case GAME_MODE_EASY: car_interval = 30; break;
@@ -62,6 +62,38 @@ void game_manager::update() {
 
 			// 移行処理
 			clsDx();
+			key_span = 0;
+			game_span = 0;
+			game_state = GAME_STATE_SELECT;
+		}
+		break;
+	case GAME_STATE_SELECT:
+		for (unsigned int i = 0; i < obj_car.size(); i++) {
+			obj_car.at(i).update();							// 車の移動
+		}
+		car_make();		// 車の追加
+
+		// キャラクターの選択
+		if (key_span++ > 10) {
+			if (CheckHitKey(KEY_INPUT_UP) == 1) {
+				key_span = 0;
+				if (--game_character < 0) { game_character = GAME_CHARA_PRINTSU; }
+			}
+			if (CheckHitKey(KEY_INPUT_DOWN) == 1) {
+				key_span = 0;
+				if (++game_character > GAME_CHARA_PRINTSU) { game_character = GAME_CHARA_BOKO; }
+			}
+		}
+		// スペースキーが押されたら、ゲームへ移行
+		if (game_span++ >= 30 && CheckHitKey(KEY_INPUT_SPACE) == 1) {
+			// キャラクターの読み込み
+			switch (game_character) {
+			case GAME_CHARA_BOKO: obj_player = player(GAME_CHARA_BOKO, VGet(0.0f, 0.0f, 0.0f)); break;
+			case GAME_CHARA_YUKARI: obj_player = player(GAME_CHARA_YUKARI, VGet(0.0f, 100.0f, 0.0f)); break;
+			case GAME_CHARA_PRINTSU: obj_player = player(GAME_CHARA_PRINTSU, VGet(0.0f, 100.0f, 0.0f)); break;
+			}
+
+			// 移行処理
 			key_span = 0;
 			game_span = 0;
 			game_state = GAME_STATE_PLAY;
@@ -119,10 +151,8 @@ void game_manager::update() {
 		// スペースキーが押されたら、各種初期化してタイトルへ移行
 		if (CheckHitKey(KEY_INPUT_SPACE) == 1) {
 			// 各インスタンス
-			obj_player = player();
+			obj_player = player(GAME_CHARA_BOKO, VGet(0.0f, 0.0f, 0.0f));
 			obj_car.clear();
-			obj_car.push_back(car());
-			obj_douro = douro();
 			obj_camera = camera();
 			
 			// ゲームクリアの判定変数
@@ -146,6 +176,13 @@ void game_manager::draw() {
 		DrawFormatString(200, 240, GetColor(0, 0, 0), "むずかしい");
 		DrawFormatString(160, 200 + game_mode * 20, GetColor(0, 0, 0), "->");
 		break;
+	case GAME_STATE_SELECT:
+		DrawFormatString(200, 100, GetColor(0, 0, 0), "キャラクターセレクト");
+		DrawFormatString(200, 200, GetColor(0, 0, 0), "なんかしろいやつ");
+		DrawFormatString(200, 220, GetColor(0, 0, 0), "ゆかりさん");
+		DrawFormatString(200, 240, GetColor(0, 0, 0), "ぷりんつ");
+		DrawFormatString(160, 200 + game_character * 20, GetColor(0, 0, 0), "->");
+		break;
 	case GAME_STATE_PLAY:
 		// カウントダウン
 		if (key_span <= 60) { key_span++; }
@@ -166,10 +203,36 @@ void game_manager::draw() {
 		break;
 	case GAME_STATE_RESULT:
 		if (game_clear) {
-			DrawFormatString(250, 100, GetColor(255, 100, 100), "うどんおいしい！\nスペースキーでタイトルに戻る.");
+			switch (game_mode) {
+			case GAME_MODE_EASY:
+				DrawFormatString(250, 100, GetColor(255, 100, 100), "やったぜ！うどんだ！");
+				DrawFormatString(250, 150, GetColor(255, 100, 100), "うどんおいしい！\nスペースキーでタイトルに戻る.");
+				break;
+			case GAME_MODE_NORMAL:
+				DrawFormatString(250, 100, GetColor(255, 100, 100), "なかなかにうどん！");
+				DrawFormatString(250, 150, GetColor(255, 100, 100), "うどんおいしい！\nスペースキーでタイトルに戻る.");
+				break;
+			case GAME_MODE_HARD:
+				DrawFormatString(250, 100, GetColor(255, 100, 100), "超うどんうどんうどん！");
+				DrawFormatString(250, 150, GetColor(255, 100, 100), "うどんおいしい！\nスペースキーでタイトルに戻る.");
+				break;
+			}
 		}
 		else if (game_miss) {
-			DrawFormatString(250, 100, GetColor(255, 100, 100), "轢かれました。\nスペースキーでタイトルに戻る.");
+			switch (game_mode) {
+			case GAME_MODE_EASY:
+				DrawFormatString(250, 100, GetColor(255, 100, 100), "轢かれました。");
+				DrawFormatString(250, 150, GetColor(255, 100, 100), "轢かれました。\nスペースキーでタイトルに戻る.");
+				break;
+			case GAME_MODE_NORMAL:
+				DrawFormatString(250, 100, GetColor(255, 100, 100), "轢かれました。");
+				DrawFormatString(250, 150, GetColor(255, 100, 100), "うどんを食べて出直してこーい\nスペースキーでタイトルに戻る.");
+				break;
+			case GAME_MODE_HARD:
+				DrawFormatString(250, 100, GetColor(255, 100, 100), "轢かれました。");
+				DrawFormatString(250, 150, GetColor(255, 100, 100), "頑張るよりうどん食べよう\nスペースキーでタイトルに戻る.");
+				break;
+			}
 		}
 		break;
 	}
@@ -201,25 +264,44 @@ player player1 = player("./resorces/bokoboko.pmd", 20.0f, VGet(200.0f, 0.0f, 0.0
 */
 
 void game_manager::car_make() {
-	const float road_far_left = -3100.0f;		// 奥側の道路の左車線
-	const float road_far_right = -2500.0f;		// 奥側の道路の右車線
-	const float road_this_left = -800.0f;		// 手前側の道路の左車線
-	const float road_this_right = -1300.0f;		// 手前側の道路の右車線
+	const float road_far_left = -2500.0f;		// 奥側の道路の左車線
+	const float road_far_right = -1900.0f;		// 奥側の道路の右車線
+	const float road_this_left = -100.0f;		// 手前側の道路の左車線
+	const float road_this_right = -700.0f;		// 手前側の道路の右車線
+
+	int rand_num = 4;	// 乱数の数
+	
+	// 難易度による変更を設定する
+	switch (game_mode) {
+	case GAME_MODE_EASY: rand_num = 3; break;
+	case GAME_MODE_NORMAL: rand_num = 5; break;
+	case GAME_MODE_HARD: rand_num = 5; break;
+	}
 
 	// 指定した間隔が経過したら車を追加する
 	if (car_span++ >= car_interval) {
-		switch (GetRand(3)) {
+		switch (GetRand(rand_num)) {
 		case 0:		// 奥側の左
-			obj_car.push_back(car(VGet(ROAD_LIMIT_LEFT, 100.0f, road_far_left), CAR_MOVE_RIGHT));
+			obj_car.push_back(car(CAR_TYPE_REGULAR, VGet(ROAD_LIMIT_LEFT, 100.0f, road_far_left), -50.0f));
 			break;
 		case 1:		// 奥側の右
-			obj_car.push_back(car(VGet(ROAD_LIMIT_LEFT, 100.0f, road_far_right), CAR_MOVE_RIGHT));
+			obj_car.push_back(car(CAR_TYPE_REGULAR, VGet(ROAD_LIMIT_LEFT, 100.0f, road_far_right), -50.0f));
 			break;
 		case 2:		// 手前側の右
-			obj_car.push_back(car(VGet(ROAD_LIMIT_RIGHT, 100.0f, road_this_right), CAR_MOVE_LEFT));
+			obj_car.push_back(car(CAR_TYPE_REGULAR, VGet(ROAD_LIMIT_RIGHT, 100.0f, road_this_right), 50.0f));
 			break;
 		case 3:		// 手前側の左
-			obj_car.push_back(car(VGet(ROAD_LIMIT_RIGHT, 100.0f, road_this_left), CAR_MOVE_LEFT));
+			obj_car.push_back(car(CAR_TYPE_REGULAR, VGet(ROAD_LIMIT_RIGHT, 100.0f, road_this_left), 50.0f));
+			break;
+		case 4:		// 奥側
+			if (GetRand(50) > 25) {
+				obj_car.push_back(car(CAR_TYPE_RORA, VGet(ROAD_LIMIT_LEFT, 200.0f, (road_far_left + road_far_right) / 2.0f), -20.0f));
+			}
+			break;
+		case 5:		// 手前側
+			if (GetRand(50) > 25) {
+				obj_car.push_back(car(CAR_TYPE_RORA, VGet(ROAD_LIMIT_RIGHT, 200.0f, (road_this_right + road_this_left) / 2.0f), 20.0f));
+			}
 			break;
 		}
 

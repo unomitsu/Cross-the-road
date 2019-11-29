@@ -18,7 +18,7 @@ bool collision_player_car(player *t_player, car *t_car) {
 	// 当たっていれば、プレイヤーに車の移動量をぶつける
 	if (dir_x + dir_y <= dir_r) {
 		VECTOR val = t_car->get_move_vector();
-		t_player->add_vector(VGet(-val.x, abs(val.x)/2.0f, val.z));
+		t_player->add_vector(VGet(val.x, abs(val.x)/2.0f, val.z));
 		return true;
 	}
 

@@ -18,13 +18,21 @@
 #define ANIM_STOP_START		220.0f
 #define ANIM_STOP_FINISH	280.0f
 
+// キャラクター
+#define GAME_CHARA_BOKO		0
+#define GAME_CHARA_YUKARI	1
+#define GAME_CHARA_PRINTSU	2
+
 class player {
 
 private:
-	std::string model_name;		// 3Dモデルのファイル名
 	VECTOR model_extend;		// 3Dモデルの縮尺率
 	VECTOR model_position;		// 3Dモデルの座標
 	VECTOR model_rotation;		// 3Dモデルの回転値
+
+	static int model_handle_boko;		// なんかしろいやつのハンドル
+	static int model_handle_yukari;		// ゆかりさんのハンドル
+	static int model_handle_printsu;	// ぷりんつおいげんさんのハンドル
 
 	int model_handle;			// 3Dモデルのハンドル
 	int attach_index;			// アタッチしたアニメーション番号
@@ -41,9 +49,9 @@ private:
 	bool flag_control;			// 操作可能かどうか
 
 public:
-	player();					// コンストラクタ
-	player(std::string filename, float extendf, VECTOR pos);							// 指定したモデルを設定
-	void initialize(std::string filename, float extendf, VECTOR pos, bool anim_load);	// 初期処理 anim_load によりアニメーションの設定有無を変更
+	player();							// コンストラクタ
+	player(int name, VECTOR pos);		// 指定したモデルを設定
+	void initialize(int name, float extendf, VECTOR pos, bool anim_load);	// 初期処理 anim_load によりアニメーションの設定有無を変更
 	void update();				// 更新
 	void update_anim();			// アニメーションの更新
 	void update_control();		// コントローラーの更新

@@ -1,19 +1,37 @@
 #include "player.h"
 #include "douro.h"
 
+int player::model_handle_boko;		// なんかしろいやつのハンドル
+int player::model_handle_yukari;	// ゆかりさんのハンドル
+int player::model_handle_printsu;	// ぷりんつおいげんさんのハンドル
+
 player::player() {
-	initialize("./resorces/bokoboko.pmd", 20.0f, VGet(0.0f, 0.0f, 0.0f), false);
+	// 3Dモデルの読み込み
+	model_handle_boko = MV1LoadModel("./resorces/bokoboko.pmd");
+	model_handle_yukari = MV1LoadModel("./resorces/yukari/yukari.pmd");
+	model_handle_printsu = MV1LoadModel("./resorces/重巡プリンツ・オイゲン/プリンツ・オイゲン(艤装なし).pmx");
+
+	// 初期化処理
+	initialize(GAME_CHARA_BOKO, 20.0f, VGet(0.0f, 0.0f, 0.0f), false);
 }
 
-player::player(std::string filename, float extendf, VECTOR pos) {
-	initialize(filename, extendf, pos, true);
+player::player(int name, VECTOR pos) {
+	switch (name) {
+	case GAME_CHARA_BOKO: initialize(name, 20.0f, pos, true); break;
+	case GAME_CHARA_YUKARI: initialize(name, 14.0f, pos, true); break;
+	case GAME_CHARA_PRINTSU: initialize(name, 14.0f, pos, true); break;
+	}
 }
 
 // 初期処理 anim_load によりアニメーションの設定有無を変更
-void player::initialize(std::string filename, float extendf, VECTOR pos, bool anim_load) {
-	model_name = filename;								// 3Dモデル名の格納
+void player::initialize(int name, float extendf, VECTOR pos, bool anim_load) {
+	// 3Dモデルの読み込み(複製)
+	switch (name) {
+	case GAME_CHARA_BOKO: model_handle = MV1DuplicateModel(model_handle_boko); break;
+	case GAME_CHARA_YUKARI:	model_handle = MV1DuplicateModel(model_handle_yukari); break;
+	case GAME_CHARA_PRINTSU:	model_handle = MV1DuplicateModel(model_handle_printsu); break;
+	}
 	model_extend = VGet(extendf, extendf, extendf);		// 3Dモデルの縮尺率の格納
-	model_handle = MV1LoadModel(model_name.c_str());	// 3Dモデルの読み込み
 
 	/* ----- 3Dモデルの設定変更 ----- */
 
@@ -171,30 +189,54 @@ void player::update_control() {
 			if (model_move_max < model_move_value) { model_move_value = model_move_max; }
 		}
 
+		const float rotation_dif = 0.02f;
+		const float rotation_max = 0.4f;
 
 		// 移動量と回転値の更新を行う
 		// -- 前への移動
 		if (CheckHitKey(KEY_INPUT_UP) == 1) {
+			if (model_rotation.x > 0) { model_rotation.x *= -1.0f; }
+			if ((model_rotation.x -= rotation_dif) < -rotation_max) { model_rotation.x = -rotation_max; }
 			model_rotation.y = 0.0f;
+			model_rotation.z = 0.0f;
 			move.z -= model_move_value;
 		}
 		// -- 右への移動
 		if (CheckHitKey(KEY_INPUT_RIGHT) == 1) {
+			model_rotation.x = 0.0f;
 			model_rotation.y = DX_PI_F / 2;
+			if (model_rotation.z < 0) { model_rotation.z *= -1.0f; }
+			if ((model_rotation.z += rotation_dif) > rotation_max) { model_rotation.z = rotation_max; }
 			move.x -= model_move_value;
 		}
 		// -- 後への移動
 		if (CheckHitKey(KEY_INPUT_DOWN) == 1) {
+			if (model_rotation.x > 0) { model_rotation.x *= -1.0f; }
+			if ((model_rotation.x -= rotation_dif) < -rotation_max) { model_rotation.x = -rotation_max; }
 			model_rotation.y = DX_PI_F;
+			model_rotation.z = 0.0f;
 			move.z += model_move_value;
 		}
 		// -- 左への移動
 		if (CheckHitKey(KEY_INPUT_LEFT) == 1) {
+			model_rotation.x = 0.0f;
 			model_rotation.y = DX_PI_F * 3 / 2;
+			if (model_rotation.z > 0) { model_rotation.z *= -1.0f; }
+			if ((model_rotation.z -= rotation_dif) < -rotation_max) { model_rotation.z = -rotation_max; }
 			move.x += model_move_value;
 		}
 		// 移動していない場合
 		if (!is_move()) {
+			// 加算した回転値の減算
+			if (model_rotation.z != 0.0f) {
+				if (model_rotation.z < 0) { model_rotation.z += rotation_dif; }
+				if (model_rotation.z > 0) { model_rotation.z -= rotation_dif; }
+			}
+			if (model_rotation.x != 0.0f) {
+				if (model_rotation.x < 0) { model_rotation.x += rotation_dif; }
+				if (model_rotation.x > 0) { model_rotation.x -= rotation_dif; }
+			}
+
 			// 「走り出し」「停止」の場合の移動量の加算
 			if (model_move_state == PLAYER_STATE_START || model_move_state == PLAYER_STATE_STOP) {
 				switch (model_move_direction) {
@@ -247,7 +289,7 @@ void player::draw() {
 
 // 3Dモデルの各データの出力
 void player::draw_log() {
-	printfDx("model_name[%s] _handle[%d]\n", model_name.c_str(), model_handle);
+	printfDx("model_name[%s] _handle[%d]\n", "model_name", model_handle);
 	printfDx("model_anim_num[%d] _index[%d]\n", MV1GetAnimNum(model_handle), attach_index);
 }
 
