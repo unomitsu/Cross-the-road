@@ -235,11 +235,14 @@ void player::draw() {
 	case PLAYER_STATE_RUN: str = "STATE_RUN"; break;
 	case PLAYER_STATE_STOP:	str = "STATE_STOP"; break;
 	}
+	
+	/*
 	DrawFormatString(10, 100, GetColor(255, 255, 255), "%s _play_time[%f]\n", str.c_str(), anim_play_time);										// 移動状態とアニメーションの現在時間
 	DrawFormatString(10, 120, GetColor(255, 255, 255), "Pos(%.2f, %.2f, %.2f)\n", model_position.x, model_position.y, model_position.z);		// 3Dモデルの空間座標
 	DrawFormatString(10, 140, GetColor(255, 255, 255), "Rot(%.2f, %.2f, %.2f)\n", model_rotation.x, model_rotation.y, model_rotation.z);		// 3Dモデルの回転値
 	DrawFormatString(10, 160, GetColor(255, 255, 255), "Ext(%.2f, %.2f, %.2f)\n", model_move_external.x, model_move_external.y, model_move_external.z);	// 3Dモデルへの外力
 	DrawFormatString(10, 180, GetColor(255, 255, 255), "move_value[%.2f]\n", model_move_value);
+	*/
 }
 
 // 3Dモデルの各データの出力

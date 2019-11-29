@@ -11,13 +11,14 @@ game_manager::game_manager() {
 	// 車一個挿入
 	obj_car.push_back(car());
 
+	/*
 	// 各種データを出力
 	obj_player.draw_log();
 	obj_player.draw();
 	obj_douro.draw_log();
 	obj_car.at(0).draw();
 	obj_car.at(0).draw_log();
-
+	*/
 }
 
 void game_manager::update() {

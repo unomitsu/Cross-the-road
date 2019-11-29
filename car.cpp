@@ -63,8 +63,8 @@ void car::draw() {
 	// ３Ｄモデルを描画
 	MV1DrawModel(model_handle);
 	
-	DrawFormatString(10, 250, GetColor(255, 255, 255), "Pos(%.2f, %.2f, %.2f)\n", model_position.x, model_position.y, model_position.z);		// 3Dモデルの空間座標
-	DrawFormatString(10, 270, GetColor(255, 255, 255), "move_value[%.2f]\n", speed);
+	// DrawFormatString(10, 250, GetColor(255, 255, 255), "Pos(%.2f, %.2f, %.2f)\n", model_position.x, model_position.y, model_position.z);		// 3Dモデルの空間座標
+	// DrawFormatString(10, 270, GetColor(255, 255, 255), "move_value[%.2f]\n", speed);
 }
 
 void car::draw_log() {
