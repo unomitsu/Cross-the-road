@@ -6,13 +6,20 @@
 #include "camera.h"
 #include <vector>
 
+// ゲームの画面状態
 #define GAME_STATE_TITLE	0
 #define GAME_STATE_PLAY		1
 #define GAME_STATE_RESULT	2
 
+// ゲームの難易度
+#define GAME_MODE_EASY		0
+#define GAME_MODE_NORMAL	1
+#define GAME_MODE_HARD		2
+
 class game_manager {
 private:
 	int game_state;		// ゲームの画面状態
+	int game_mode;		// ゲームの難易度
 
 	int game_span;		// ゲーム終了後の待機時間
 	bool game_clear;	// ゲームクリアフラグ
@@ -23,7 +30,11 @@ private:
 	douro obj_douro;			// 道路インスタンス
 	camera obj_camera;			// カメラインスタンス
 
-	int car_span;		// 車作成の間隔
+	int car_span;		// 車作成の現間隔
+	int car_interval;	// 車作成の制限間隔
+	int key_span;		// キー入力の制限間隔
+
+	int font_count_down;	// カウントダウン用のフォント
 
 public:
 	game_manager();		// コンストラクタ

@@ -8,8 +8,16 @@ game_manager::game_manager() {
 	game_clear = false;
 	game_miss = false;
 
+	car_span = 0;
+	key_span = 0;
+
 	// 車一個挿入
 	obj_car.push_back(car());
+
+	// フォントデータ
+	font_count_down = CreateFontToHandle(NULL, 100, 10, -1);
+
+
 
 	/*
 	// 各種データを出力
@@ -28,19 +36,41 @@ void game_manager::update() {
 			obj_car.at(i).update();							// 車の移動
 		}
 
+		// 難易度の選択
+		if (key_span++ > 10) {
+			if (CheckHitKey(KEY_INPUT_UP) == 1) {
+				key_span = 0;
+				if (--game_mode < 0) { game_mode = GAME_MODE_HARD; }
+			}
+			if (CheckHitKey(KEY_INPUT_DOWN) == 1) {
+				key_span = 0;
+				if (++game_mode > GAME_MODE_HARD) { game_mode = GAME_MODE_EASY; }
+			}
+		}
+
 		// スペースキーが押されたら、ゲームへ移行
 		if (game_span++ >= 30 && CheckHitKey(KEY_INPUT_SPACE) == 1) {
 			// プレイヤー設定
 			obj_player = player("./resorces/yukari/yukari.pmd", 14.0f, VGet(0.0f, 0.0f, 0.0f));
 
+			// 難易度による、車の数の設定
+			switch (game_mode) {
+			case GAME_MODE_EASY: car_interval = 30; break;
+			case GAME_MODE_NORMAL: car_interval = 10; break;
+			case GAME_MODE_HARD: car_interval = 2; break;
+			}
+
 			// 移行処理
 			clsDx();
+			key_span = 0;
 			game_span = 0;
 			game_state = GAME_STATE_PLAY;
 		}
 		break;
 	case GAME_STATE_PLAY:
-		obj_player.update();								// プレイヤーの操作
+		if (key_span++ > 180) {
+			obj_player.update();							// プレイヤーの操作
+		}
 		for (unsigned int i = 0; i < obj_car.size(); i++) {
 			obj_car.at(i).update();							// 車の移動
 		}
@@ -106,9 +136,25 @@ void game_manager::update() {
 void game_manager::draw() {
 	switch (game_state) {
 	case GAME_STATE_TITLE:
-		DrawFormatString(250, 100, GetColor(255, 100, 100), "うどん屋へ行きたい\nスペースキーを押してはじめる.");
+		DrawFormatString(200, 100, GetColor(0, 0, 0), "うどん屋へ行きたい\nスペースキーを押してはじめる.");
+		DrawFormatString(200, 200, GetColor(0, 0, 0), "かんたん");
+		DrawFormatString(200, 220, GetColor(0, 0, 0), "ふつう");
+		DrawFormatString(200, 240, GetColor(0, 0, 0), "むずかしい");
+		DrawFormatString(160, 200 + game_mode * 20, GetColor(0, 0, 0), "->");
 		break;
 	case GAME_STATE_PLAY:
+		// カウントダウン
+		if (key_span <= 60) { key_span++; }
+		else if (key_span <= 120) { DrawStringToHandle(200, 100, "3", GetColor(255, 0, 0), font_count_down); key_span++; }
+		else if (key_span <= 180) { DrawStringToHandle(200, 100, "2", GetColor(255, 0, 0), font_count_down); }
+		else if (key_span <= 240) { DrawStringToHandle(200, 100, "1", GetColor(255, 0, 0), font_count_down); }
+
+		// ゲームモード表示
+		switch (game_mode) {
+		case GAME_MODE_EASY: DrawFormatString(10, 10, GetColor(255, 255, 255), "MODE[ EASY ]"); break;
+		case GAME_MODE_NORMAL: DrawFormatString(10, 10, GetColor(255, 255, 255), "MODE[ NORMAL ]"); break;
+		case GAME_MODE_HARD: DrawFormatString(10, 10, GetColor(255, 255, 255), "MODE[ HARD ]"); break;
+		}
 		break;
 	case GAME_STATE_RESULT:
 		if (game_clear) {
@@ -135,6 +181,9 @@ void game_manager::finalize() {
 	for (unsigned int i = 0; i < obj_car.size(); i++) {
 		obj_car.at(i).finalize();
 	}
+
+	// フォントデータの削除
+	DeleteFontToHandle(font_count_down);
 }
 
 /*
@@ -150,7 +199,7 @@ void game_manager::car_make() {
 	const float road_this_right = -1300.0f;		// 手前側の道路の右車線
 
 	// 指定した間隔が経過したら車を追加する
-	if (car_span++ >= 10) {
+	if (car_span++ >= car_interval) {
 		switch (GetRand(3)) {
 		case 0:		// 奥側の左
 			obj_car.push_back(car(VGet(ROAD_LIMIT_LEFT, 50.0f, road_far_left), CAR_MOVE_RIGHT));
