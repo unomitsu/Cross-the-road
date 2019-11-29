@@ -20,9 +20,9 @@ private:
 
 
 public:
-	douro();
-	void update();
-	void draw();
-	void draw_log();
-	void finalize();
+	douro();			// コンストラクタ
+	void update();		// 更新
+	void draw();		// 描画
+	void draw_log();	// 各データの表示
+	void finalize();	// モデルデータの開放
 };

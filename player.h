@@ -38,21 +38,24 @@ private:
 	float model_move_value;		// 3Dモデルの移動量の現在値
 	int model_move_direction;	// 3Dモデルの進行方向
 	VECTOR model_move_external;	// 3Dモデルへの外力
+	bool flag_control;			// 操作可能かどうか
 
 public:
-	player();	// タイトル用のコンストラクタ
+	player();					// コンストラクタ
 	player(std::string filename, float extendf, VECTOR pos);							// 指定したモデルを設定
 	void initialize(std::string filename, float extendf, VECTOR pos, bool anim_load);	// 初期処理 anim_load によりアニメーションの設定有無を変更
-	void update();
-	void update_anim();
-	void update_control();
-	void draw();
-	void draw_log();
-	void finalize();
+	void update();				// 更新
+	void update_anim();			// アニメーションの更新
+	void update_control();		// コントローラーの更新
+	void draw();				// 描画
+	void draw_log();			// 各データの出力
+	void finalize();			// 画像データの開放
 
-	bool is_move();
-	void add_vector(VECTOR vec);
+	bool is_move();					// 移動に使うボタンのいずれかが押されていれば true を返す
+	void add_vector(VECTOR vec);	// 外からの力をぶつけるやつ
+	void rotation();				// ぶつかった時に回転させるやつ
+	void control_off();				// 操作できなくするやつ
 
-	VECTOR get_position();
+	VECTOR get_position();			// 3Dモデルの座標を返す
 };
 

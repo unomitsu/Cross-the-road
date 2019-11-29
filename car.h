@@ -28,11 +28,11 @@ public:
 	car();									// タイトル用
 	car(VECTOR pos, int move);				// 座標を指定して作成
 	void initialize(VECTOR pos, int move);	// 初期設定
-	void update();
-	void draw();
-	void draw_log();
-	void finalize();
+	void update();		// 更新
+	void draw();		// 描画
+	void draw_log();	// 各データの表示
+	void finalize();	// モデルデータの開放
 
-	VECTOR get_position();
-	VECTOR get_move_vector();
+	VECTOR get_position();		// 座標を返す
+	VECTOR get_move_vector();	// 移動量を返す プレイヤーにぶつけるときのやつ
 };

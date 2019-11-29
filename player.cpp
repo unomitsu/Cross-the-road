@@ -44,6 +44,7 @@ void player::initialize(std::string filename, float extendf, VECTOR pos, bool an
 		model_move_max = 20.0f;					// 移動量の最大値を格納
 		model_move_value = 0.0f;				// 移動量の現在値を格納
 		model_move_external = VGet(0.0f, 0.0f, 0.0f);	// 外力を初期化する
+		flag_control = true;
 
 		// アニメーションによるローカルの座標移動を無効にする
 		MV1SetFrameUserLocalMatrix(model_handle, MV1SearchFrame(model_handle, "センター"), MGetIdent());
@@ -142,63 +143,66 @@ void player::update_control() {
 	// 加算用のVECTOR変数を宣言
 	VECTOR move = VGet(0.0f, 0.0f, 0.0f);
 
-	// 最近の移動方向を格納
-	if (CheckHitKey(KEY_INPUT_UP) == 1) { model_move_direction = 1; }		// 前 1
-	if (CheckHitKey(KEY_INPUT_RIGHT) == 1) { model_move_direction = 2; }	// 右 2
-	if (CheckHitKey(KEY_INPUT_DOWN) == 1) { model_move_direction = 3; }		// 後 3
-	if (CheckHitKey(KEY_INPUT_LEFT) == 1) { model_move_direction = 4; }		// 左 4
+	// コントローラー
+	if (flag_control) {
+		// 最近の移動方向を格納
+		if (CheckHitKey(KEY_INPUT_UP) == 1) { model_move_direction = 1; }		// 前 1
+		if (CheckHitKey(KEY_INPUT_RIGHT) == 1) { model_move_direction = 2; }	// 右 2
+		if (CheckHitKey(KEY_INPUT_DOWN) == 1) { model_move_direction = 3; }		// 後 3
+		if (CheckHitKey(KEY_INPUT_LEFT) == 1) { model_move_direction = 4; }		// 左 4
 
 
-	// 待機状態の時、移動量を初期化する
-	if (model_move_state == PLAYER_STATE_STAND) {
-		model_move_value = 0.0f;
-	}
-	// 停止状態の時、移動量を減少させていく
-	else if (model_move_state == PLAYER_STATE_STOP) {
-		model_move_value -= model_move_max / 20;
+		// 待機状態の時、移動量を初期化する
+		if (model_move_state == PLAYER_STATE_STAND) {
+			model_move_value = 0.0f;
+		}
+		// 停止状態の時、移動量を減少させていく
+		else if (model_move_state == PLAYER_STATE_STOP) {
+			model_move_value -= model_move_max / 20;
 
-		// 最小値を超えた時の調整
-		if (model_move_value < 0.0f) { model_move_value = 0.0f; }
-	}
-	// その他の時、移動量を増加させていく
-	else {
-		model_move_value += model_move_max / 20;
-		
-		// 最大値を超えた時の調整
-		if (model_move_max < model_move_value) { model_move_value = model_move_max; }
-	}
+			// 最小値を超えた時の調整
+			if (model_move_value < 0.0f) { model_move_value = 0.0f; }
+		}
+		// その他の時、移動量を増加させていく
+		else {
+			model_move_value += model_move_max / 20;
+
+			// 最大値を超えた時の調整
+			if (model_move_max < model_move_value) { model_move_value = model_move_max; }
+		}
 
 
-	// 移動量と回転値の更新を行う
-	// -- 前への移動
-	if (CheckHitKey(KEY_INPUT_UP) == 1) {
-		model_rotation.y = 0.0f;
-		move.z -= model_move_value;
-	}
-	// -- 右への移動
-	if (CheckHitKey(KEY_INPUT_RIGHT) == 1) {
-		model_rotation.y = DX_PI_F / 2;
-		move.x -= model_move_value;
-	}
-	// -- 後への移動
-	if (CheckHitKey(KEY_INPUT_DOWN) == 1) {
-		model_rotation.y = DX_PI_F;
-		move.z += model_move_value;
-	}
-	// -- 左への移動
-	if (CheckHitKey(KEY_INPUT_LEFT) == 1) {
-		model_rotation.y = DX_PI_F * 3 / 2;
-		move.x += model_move_value;
-	}
-	// 移動していない場合
-	if (!is_move()) {
-		// 「走り出し」「停止」の場合の移動量の加算
-		if (model_move_state == PLAYER_STATE_START || model_move_state == PLAYER_STATE_STOP) {
-			switch (model_move_direction) {
-			case 1:	move.z -= model_move_value;	break;
-			case 2:	move.x -= model_move_value;	break;
-			case 3:	move.z += model_move_value;	break;
-			case 4:	move.x += model_move_value;	break;
+		// 移動量と回転値の更新を行う
+		// -- 前への移動
+		if (CheckHitKey(KEY_INPUT_UP) == 1) {
+			model_rotation.y = 0.0f;
+			move.z -= model_move_value;
+		}
+		// -- 右への移動
+		if (CheckHitKey(KEY_INPUT_RIGHT) == 1) {
+			model_rotation.y = DX_PI_F / 2;
+			move.x -= model_move_value;
+		}
+		// -- 後への移動
+		if (CheckHitKey(KEY_INPUT_DOWN) == 1) {
+			model_rotation.y = DX_PI_F;
+			move.z += model_move_value;
+		}
+		// -- 左への移動
+		if (CheckHitKey(KEY_INPUT_LEFT) == 1) {
+			model_rotation.y = DX_PI_F * 3 / 2;
+			move.x += model_move_value;
+		}
+		// 移動していない場合
+		if (!is_move()) {
+			// 「走り出し」「停止」の場合の移動量の加算
+			if (model_move_state == PLAYER_STATE_START || model_move_state == PLAYER_STATE_STOP) {
+				switch (model_move_direction) {
+				case 1:	move.z -= model_move_value;	break;
+				case 2:	move.x -= model_move_value;	break;
+				case 3:	move.z += model_move_value;	break;
+				case 4:	move.x += model_move_value;	break;
+				}
 			}
 		}
 	}
@@ -210,10 +214,12 @@ void player::update_control() {
 	model_position = VAdd(model_position, move);
 
 	// 範囲外のチェック
-	if (model_position.z < WORLD_LIMIT_UP) { model_position.z = WORLD_LIMIT_UP; }
-	if (WORLD_LIMIT_DOWN < model_position.z) { model_position.z = WORLD_LIMIT_DOWN; }
-	if (WORLD_LIMIT_LEFT < model_position.x) { model_position.x = WORLD_LIMIT_LEFT; }
-	if (model_position.x < WORLD_LIMIT_RIGHT) { model_position.x = WORLD_LIMIT_RIGHT; }
+	if (flag_control) {
+		if (model_position.z < WORLD_LIMIT_UP) { model_position.z = WORLD_LIMIT_UP; }
+		if (WORLD_LIMIT_DOWN < model_position.z) { model_position.z = WORLD_LIMIT_DOWN; }
+		if (WORLD_LIMIT_LEFT < model_position.x) { model_position.x = WORLD_LIMIT_LEFT; }
+		if (model_position.x < WORLD_LIMIT_RIGHT) { model_position.x = WORLD_LIMIT_RIGHT; }
+	}
 }
 
 // 3Dモデルの描画
@@ -257,6 +263,14 @@ bool player::is_move() {
 void player::add_vector(VECTOR vec) {
 	model_move_external = VAdd(model_move_external, vec);
 }
+
+void player::rotation() {
+	model_rotation.y += 0.5f;
+}
+void player::control_off() {
+	flag_control = false;
+}
+
 
 // プレイヤーの座標を VECTOR 型で取得する
 VECTOR player::get_position() {

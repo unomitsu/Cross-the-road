@@ -26,9 +26,9 @@ private:
 	int car_span;		// 車作成の間隔
 
 public:
-	game_manager();
-	void update();
-	void draw();
-	void finalize();
-	void car_make();
+	game_manager();		// コンストラクタ
+	void update();		// 更新
+	void draw();		// 描画
+	void finalize();	// モデルデータの開放
+	void car_make();	// 車を作成したり削除したりするやつ
 };

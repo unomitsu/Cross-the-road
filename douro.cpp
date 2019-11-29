@@ -48,8 +48,8 @@ void douro::draw() {
 	VECTOR pos3 = VGet(WORLD_LIMIT_RIGHT, pos_y, WORLD_LIMIT_DOWN);
 	VECTOR pos4 = VGet(WORLD_LIMIT_LEFT, pos_y, WORLD_LIMIT_DOWN);
 
-	DrawTriangle3D(pos1, pos2, pos3, GetColor(255, 0, 0), TRUE);
-	DrawTriangle3D(pos3, pos4, pos1, GetColor(255, 0, 0), TRUE);
+	DrawTriangle3D(pos1, pos2, pos3, GetColor(100, 255, 100), TRUE);
+	DrawTriangle3D(pos3, pos4, pos1, GetColor(100, 255, 100), TRUE);
 }
 
 void douro::draw_log() {

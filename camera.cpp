@@ -5,6 +5,8 @@ camera::camera() {
 	position = VGet(800.0f, 240.0f, 1500.0f);
 	// カメラの位置と注視点をセット、注視点は原点
 	SetCameraPositionAndTarget_UpVecY(position, VGet(0.0f, 0.0f, 0.0f));
+
+	track = true;
 }
 
 void camera::update(VECTOR pos) {
@@ -19,14 +21,19 @@ void camera::update(VECTOR pos) {
 		if (CheckHitKey(KEY_INPUT_S) == 1) { position.z -= 50.0f; }
 	}
 	*/
-	// Sキーを押している場合、左俯瞰
-	if (CheckHitKey(KEY_INPUT_LCONTROL) == 1) {
-		position = VGet(pos.x - 500.0f, 240.0f, pos.z + 900.0f);
+
+	// 追尾する場合のみ
+	if (track) {
+		// Sキーを押している場合、左俯瞰
+		if (CheckHitKey(KEY_INPUT_LCONTROL) == 1) {
+			position = VGet(pos.x - 500.0f, 240.0f, pos.z + 900.0f);
+		}
+		// Sキーを押していない場合、右俯瞰
+		else {
+			position = VGet(pos.x + 500.0f, 240.0f, pos.z + 900.0f);
+		}
 	}
-	// Sキーを押していない場合、右俯瞰
-	else {
-		position = VGet(pos.x + 500.0f, 240.0f, pos.z + 900.0f);
-	}
+	
 	// カメラの位置と注視点をセット、注視点はプレイヤー
 	SetCameraPositionAndTarget_UpVecY(position, pos);
 }
@@ -39,4 +46,9 @@ void camera::draw() {
 
 
 	DrawFormatString(10, 10, GetColor(255, 255, 255), "CAMERA(%f, %f, %f)", position.x, position.y, position.z);
+}
+
+
+void camera::track_off() {
+	track = false;
 }

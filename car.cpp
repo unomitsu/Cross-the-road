@@ -83,5 +83,8 @@ VECTOR car::get_position() {
 
 // ŽÔ‚ÌˆÚ“®—Ê‚ð VECTOR Œ^‚ÅŽæ“¾‚·‚é
 VECTOR car::get_move_vector() {
-	return VGet(speed, 0.0f, 0.0f);
+	if (move_type == CAR_MOVE_LEFT) {
+		return VGet(speed, 0.0f, 0.0f);
+	}
+	return VGet(-speed, 0.0f, 0.0f);
 }

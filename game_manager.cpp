@@ -47,26 +47,31 @@ void game_manager::update() {
 
 		// クリアしている場合
 		if (game_clear) {
-			if (game_span++ >= 180) {
-				// 当たったらリザルトへ移行
-				game_state = GAME_STATE_RESULT;
-			}
+			// 当たったらリザルトへ移行
+			game_state = GAME_STATE_RESULT;
 		}
 		// 失敗している場合
 		else if (game_miss) {
+			// プレイヤーぐるぐる
+			obj_player.rotation();
+
+			// しばらく待ってからリザルトへ移行
 			if (game_span++ >= 180) {
-				// 当たったらリザルトへ移行
 				game_state = GAME_STATE_RESULT;
 			}
 		}
 		// プレイ中の場合
 		else {
 			// プレイヤーとゴールのあたり判定
-
+			if (collision_player_udonbox(&obj_player)) {
+				game_clear = true;
+			}
 			// プレイヤーと車たちのあたり判定
 			for (unsigned int i = 0; i < obj_car.size(); i++) {
 				if (collision_player_car(&obj_player, &obj_car.at(i))) {
 					game_miss = true;
+					obj_player.control_off();
+					obj_camera.track_off();
 				}
 			}
 		}
@@ -105,7 +110,9 @@ void game_manager::draw() {
 	case GAME_STATE_PLAY:
 		break;
 	case GAME_STATE_RESULT:
-		if (game_clear) {}
+		if (game_clear) {
+			DrawFormatString(250, 100, GetColor(255, 100, 100), "うどんおいしい！\nスペースキーでタイトルに戻る.");
+		}
 		else if (game_miss) {
 			DrawFormatString(250, 100, GetColor(255, 100, 100), "轢かれました。\nスペースキーでタイトルに戻る.");
 		}
