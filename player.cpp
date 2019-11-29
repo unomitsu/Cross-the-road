@@ -1,4 +1,5 @@
 #include "player.h"
+#include "douro.h"
 
 player::player() {
 	initialize("./resorces/bokoboko.pmd", 20.0f, VGet(0.0f, 0.0f, 0.0f), false);
@@ -207,6 +208,12 @@ void player::update_control() {
 
 	// 移動量を加算して、座標の更新
 	model_position = VAdd(model_position, move);
+
+	// 範囲外のチェック
+	if (model_position.z < WORLD_LIMIT_UP) { model_position.z = WORLD_LIMIT_UP; }
+	if (WORLD_LIMIT_DOWN < model_position.z) { model_position.z = WORLD_LIMIT_DOWN; }
+	if (WORLD_LIMIT_LEFT < model_position.x) { model_position.x = WORLD_LIMIT_LEFT; }
+	if (model_position.x < WORLD_LIMIT_RIGHT) { model_position.x = WORLD_LIMIT_RIGHT; }
 }
 
 // 3Dモデルの描画

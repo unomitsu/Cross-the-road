@@ -19,15 +19,37 @@ douro::douro() {
 
 	/* ----- 3Dモデルの配置 原点(320.0f, -300.0f, 600.0f)とする ----- */
 	model_position = VGet(320.0f + 0.0f, -300.0f + -50.0f, 600.0f + -2000.0f);	// 3Dモデルの座標の格納
-	MV1SetPosition(model_handle, model_position);									// 3Dモデルの3D空間への配置
+	MV1SetPosition(model_handle, model_position);	// 3Dモデルの3D空間への配置
+
+
+	/* うどん屋 */
+	model_handle_udonbox = MV1LoadModel("./resorces/udon_box.mv1");		// 3Dモデルの読み込み
+	MV1SetScale(model_handle_udonbox, VGet(3.0f, 3.0f, 3.0f));			// 3Dモデルの拡大縮小
+	MaterialNum = MV1GetMaterialNum(model_handle_udonbox);				// 3Dモデルの輪郭線の修正
+	for (int i = 0; i < MaterialNum; i++) {
+		float dotwidth = MV1GetMaterialOutLineDotWidth(model_handle_udonbox, i);	// マテリアルの輪郭線の太さを取得  
+		MV1SetMaterialOutLineDotWidth(model_handle_udonbox, i, dotwidth / 50.0f);	// マテリアルの輪郭線の太さを拡大した分小さくする  
+	}
+	MV1SetPosition(model_handle_udonbox, VGet(2000.0f, -50.0f, -4000.0f));			// 3Dモデルの3D空間への配置
+
 }
 
 void douro::update() {
 }
 
 void douro::draw() {
-	// ３Ｄモデルを描画
-	MV1DrawModel(model_handle);
+	MV1DrawModel(model_handle);				// 道路
+	MV1DrawModel(model_handle_udonbox);		// うどん屋
+
+	/* 地面 */
+	float pos_y = -350.0f;
+	VECTOR pos1 = VGet(WORLD_LIMIT_LEFT, pos_y, WORLD_LIMIT_UP);
+	VECTOR pos2 = VGet(WORLD_LIMIT_RIGHT, pos_y, WORLD_LIMIT_UP);
+	VECTOR pos3 = VGet(WORLD_LIMIT_RIGHT, pos_y, WORLD_LIMIT_DOWN);
+	VECTOR pos4 = VGet(WORLD_LIMIT_LEFT, pos_y, WORLD_LIMIT_DOWN);
+
+	DrawTriangle3D(pos1, pos2, pos3, GetColor(255, 0, 0), TRUE);
+	DrawTriangle3D(pos3, pos4, pos1, GetColor(255, 0, 0), TRUE);
 }
 
 void douro::draw_log() {

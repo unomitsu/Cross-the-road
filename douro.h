@@ -2,6 +2,12 @@
 #include "DxLib.h"
 #include <string>
 
+// 存在可能な範囲
+#define WORLD_LIMIT_UP		-4000.0f
+#define WORLD_LIMIT_DOWN	1000.0f
+#define WORLD_LIMIT_LEFT	3000.0f
+#define WORLD_LIMIT_RIGHT	-1500.0f
+
 class douro {
 private:
 	std::string model_name;		// 3Dモデルのファイル名
@@ -9,6 +15,9 @@ private:
 	VECTOR model_position;		// 3Dモデルの座標
 
 	int model_handle;			// 3Dモデルのハンドル
+
+	int model_handle_udonbox;	// うどん屋の3Dモデルハンドル
+
 
 public:
 	douro();
