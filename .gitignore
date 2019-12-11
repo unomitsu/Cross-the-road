@@ -261,6 +261,10 @@ __pycache__/
 *.pyc
 
 # Other files
-resorces/
+resorces/*
+!boxcar.mv1
+!rora.mv1
+!Douro.mv1
+
 t/
 Log.txt

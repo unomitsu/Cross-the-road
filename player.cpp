@@ -31,12 +31,10 @@ void player::initialize(int name, float extendf, VECTOR pos, bool anim_load) {
 	case GAME_CHARA_YUKARI:	model_handle = MV1DuplicateModel(model_handle_yukari); break;
 	case GAME_CHARA_PRINTSU:	model_handle = MV1DuplicateModel(model_handle_printsu); break;
 	}
+
+	/* ----- 3Dモデルの大きさ設定 ----- */
 	model_extend = VGet(extendf, extendf, extendf);		// 3Dモデルの縮尺率の格納
-
-	/* ----- 3Dモデルの設定変更 ----- */
-
-	// 3Dモデルの拡大縮小
-	MV1SetScale(model_handle, model_extend);
+	MV1SetScale(model_handle, model_extend);			// 3Dモデルの拡大縮小
 
 	// 3Dモデルの輪郭線の修正
 	int MaterialNum = MV1GetMaterialNum(model_handle);
@@ -45,7 +43,7 @@ void player::initialize(int name, float extendf, VECTOR pos, bool anim_load) {
 		MV1SetMaterialOutLineDotWidth(model_handle, i, dotwidth / 50.0f);	// マテリアルの輪郭線の太さを拡大した分小さくする  
 	}
 
-	/* ----- 3Dモデルの配置 ----- */											// 原点(320.0f, -300.0f, 600.0f)とする
+	/* ----- 3Dモデルの配置設定 ----- */										// 原点(320.0f, -300.0f, 600.0f)とする
 	model_position = VGet(320.0f + pos.x, -250.0f + pos.y, 600.0f + pos.z);		// 3Dモデルの座標の格納
 	model_rotation = VGet(0.0f, 0.0f, 0.0f);									// 3Dモデルの回転値の格納
 	MV1SetPosition(model_handle, model_position);								// 3Dモデルの3D空間への配置
@@ -66,21 +64,13 @@ void player::initialize(int name, float extendf, VECTOR pos, bool anim_load) {
 
 		// アニメーションによるローカルの座標移動を無効にする
 		MV1SetFrameUserLocalMatrix(model_handle, MV1SearchFrame(model_handle, "センター"), MGetIdent());
-		//MV1SetFrameUserLocalMatrix(model_handle, MV1SearchFrame(model_handle, "グルーブ"), MGetIdent());
 	}
 }
 
 // プレイヤーの更新
 void player::update() {
-	// コントローラーの更新
-	update_control();
-
-	// アニメーションの更新
-	update_anim();
-
-	// 3Dモデルの3D空間への再配置
-	MV1SetPosition(model_handle, model_position);
-	MV1SetRotationXYZ(model_handle, model_rotation);
+	update_control();	// コントローラーの更新
+	update_anim();		// アニメーションの更新
 }
 
 // プレイヤーのアニメーションの更新
@@ -262,6 +252,10 @@ void player::update_control() {
 		if (WORLD_LIMIT_LEFT < model_position.x) { model_position.x = WORLD_LIMIT_LEFT; }
 		if (model_position.x < WORLD_LIMIT_RIGHT) { model_position.x = WORLD_LIMIT_RIGHT; }
 	}
+
+	// 3D空間への再配置
+	MV1SetPosition(model_handle, model_position);
+	MV1SetRotationXYZ(model_handle, model_rotation);
 }
 
 // 3Dモデルの描画
@@ -277,14 +271,6 @@ void player::draw() {
 	case PLAYER_STATE_RUN: str = "STATE_RUN"; break;
 	case PLAYER_STATE_STOP:	str = "STATE_STOP"; break;
 	}
-	
-	/*
-	DrawFormatString(10, 100, GetColor(255, 255, 255), "%s _play_time[%f]\n", str.c_str(), anim_play_time);										// 移動状態とアニメーションの現在時間
-	DrawFormatString(10, 120, GetColor(255, 255, 255), "Pos(%.2f, %.2f, %.2f)\n", model_position.x, model_position.y, model_position.z);		// 3Dモデルの空間座標
-	DrawFormatString(10, 140, GetColor(255, 255, 255), "Rot(%.2f, %.2f, %.2f)\n", model_rotation.x, model_rotation.y, model_rotation.z);		// 3Dモデルの回転値
-	DrawFormatString(10, 160, GetColor(255, 255, 255), "Ext(%.2f, %.2f, %.2f)\n", model_move_external.x, model_move_external.y, model_move_external.z);	// 3Dモデルへの外力
-	DrawFormatString(10, 180, GetColor(255, 255, 255), "move_value[%.2f]\n", model_move_value);
-	*/
 }
 
 // 3Dモデルの各データの出力
@@ -295,8 +281,7 @@ void player::draw_log() {
 
 // プレイヤークラスの終了処理
 void player::finalize() {
-	// モデルハンドルの削除
-	MV1DeleteModel(model_handle);
+	MV1DeleteModel(model_handle);	// モデルハンドルの削除
 }
 
 // プレイヤーが動いているかの真偽を返す
@@ -309,13 +294,15 @@ void player::add_vector(VECTOR vec) {
 	model_move_external = VAdd(model_move_external, vec);
 }
 
+// 3Dモデルを回転させる
 void player::rotation() {
 	model_rotation.y += 0.5f;
 }
+
+// 操作できないようにする
 void player::control_off() {
 	flag_control = false;
 }
-
 
 // プレイヤーの座標を VECTOR 型で取得する
 VECTOR player::get_position() {

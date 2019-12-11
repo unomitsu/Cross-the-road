@@ -242,7 +242,7 @@ void game_manager::draw() {
 		obj_car.at(i).draw();		// 車クラス
 	}
 	obj_douro.draw();				// 道路クラス
-	obj_camera.draw();				// カメラクラス
+	// obj_camera.draw();				// カメラクラス
 }
 
 void game_manager::finalize() {

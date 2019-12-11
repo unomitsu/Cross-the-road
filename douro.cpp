@@ -31,7 +31,6 @@ douro::douro() {
 		MV1SetMaterialOutLineDotWidth(model_handle_udonbox, i, dotwidth / 50.0f);	// マテリアルの輪郭線の太さを拡大した分小さくする  
 	}
 	MV1SetPosition(model_handle_udonbox, VGet(2000.0f, -50.0f, -4000.0f));			// 3Dモデルの3D空間への配置
-
 }
 
 void douro::update() {

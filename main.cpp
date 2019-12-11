@@ -23,12 +23,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		gm.update();
 		gm.draw();
-		
+
 		ScreenFlip();		// 裏画面の内容を表画面に反映
 	}
 
 	gm.finalize();
-
 
 	DxLib_End();			// ＤＸライブラリ使用の終了処理
 	return 0;				// ソフトの終了 
